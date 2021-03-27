@@ -5,17 +5,13 @@ using UnityEngine;
 
 namespace JiRath.InteractSystem
 {
+    [SelectionBase]
     public abstract class Interactable : MonoBehaviour
     {
-        public string interactableName;
-        public string hoverMessage;
-        protected bool bActivated = false;
+        [Tooltip("Whether the name of the interactable should be displayed on certain UI elements")]
+        public bool nameVisible = false;
 
-        void Awake()
-        {
-            if (interactableName != "")
-                name = interactableName;
-        }
+        protected bool bActivated = false;
 
         /// <summary>
         /// Called to change the state of the Interactable (on/off)
@@ -34,5 +30,13 @@ namespace JiRath.InteractSystem
         }
 
         public abstract bool CanInteract(GameObject Interactor);
+
+        public virtual string GetName()
+        {
+            string name = "";
+            if (nameVisible)
+                name = gameObject.name;
+            return name;
+        }
     }
 }

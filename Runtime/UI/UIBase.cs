@@ -10,19 +10,21 @@ namespace JiRath.InteractSystem.UI
         private static List<UIBase> UIList = new List<UIBase>();
         [HideInInspector]
         protected GameObject owningPlayer;
+        [Tooltip("Canvas to toggle active when using Inventory UI"), SerializeField]
+        protected Canvas canvasReference;
         public bool enableUIOverlap = false;
 
         public event Action<bool> OnDisablePlayer;
 
-        void OnEnable()
+        protected virtual void OnEnable()
         {
-            if (!enableUIOverlap)
+            if (!enableUIOverlap && !UIList.Contains(this))
                 UIList.Add(this);
         }
 
-        void OnDisable()
+        protected virtual void OnDisable()
         {
-            if (!enableUIOverlap)
+            if (!enableUIOverlap && UIList.Contains(this))
                 UIList.Remove(this);
         }
 
@@ -33,7 +35,8 @@ namespace JiRath.InteractSystem.UI
         /// <returns></returns>
         public virtual void Bind(GameObject owner)
         {
-            owningPlayer = owner;
+            if (owner)
+                owningPlayer = owner;
         }
 
         public abstract bool IsEnabled();

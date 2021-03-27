@@ -46,15 +46,22 @@ namespace JiRath.InteractSystem.UI
             }
         }
 
-        string GetInteractableMessage(Interactable interactable)
+        protected virtual string GetInteractableMessage(Interactable interactable)
         {
             string interactName = "";
-            if (interactable)
+            if (interactable && interactable.GetName() != "")
             {
-                if (interactable.interactableName != "") //Display interactable name
-                    interactName = interactable.interactableName;
-                else if (interactable.hoverMessage != "") //Display hover message
-                    interactName = interactable.hoverMessage;
+                // Only display name for interactables that allow it
+                var namedInteractable = interactable as InteractableNamed;
+                if (namedInteractable)
+                {
+                    if (namedInteractable.nameVisible)
+                        interactName = interactable.GetName();
+                }
+                else
+                {
+                    interactName = interactable.GetName();
+                }
             }
             return interactName;
         }
@@ -65,7 +72,7 @@ namespace JiRath.InteractSystem.UI
             interactAnimator.SetBool("isVisible", isVisible);
         }
 
-        void OnDestroy()
+        protected override void OnDisable()
         {
             if (owningPlayer)
                 owningPlayer.GetComponent<InteractManager>().OnHoverUpdate -= UI_InteractHover;
